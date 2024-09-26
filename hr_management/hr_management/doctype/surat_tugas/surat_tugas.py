@@ -14,7 +14,7 @@ class SuratTugas(Document):
 		nama_surat = f'{self.no_surat.replace('/', '-')}.docx'
 		# file = frappe.utils.get_site_path('private', 'files', 'test.txt')
 
-		generated_docx = self.create_document(nama_surat, karyawan_items)
+		generated_docx = self.generate_document(nama_surat, karyawan_items)
 		self.upload_document_to_file_manager(nama_surat, generated_docx)
 
 	def get_karyawan_data(self):
@@ -35,11 +35,61 @@ class SuratTugas(Document):
 
 		return karyawan_items
 
-	def create_document(self, nama_surat, karyawan_items):
-		template_path = frappe.utils.get_site_path('private', 'templates', 'st_kelompok.docx')
-		doc = DocxTemplate(template_path)
-		tanggal = frappe.utils.formatdate(frappe.utils.nowdate(), "dddd, dd MMMM yyyy")
+	def generate_document(self, nama_surat, karyawan_items):
+		tanggal = frappe.utils.formatdate(frappe.utils.nowdate(), "dd MMMM yyyy")
 
+		keperluan = 'ke'
+		if self.keperluan:
+			keperluan = f'{self.keperluan} ke'
+
+		if len(karyawan_items) > 1:
+			template_path = frappe.get_app_path('hr_management', 'templates', 'docs', 'st_kelompok.docx')
+			doc = DocxTemplate(template_path)
+
+			return self.generate_kelompok_document(doc, karyawan_items, keperluan, tanggal, nama_surat)
+		else:
+			template_path = frappe.get_app_path('hr_management', 'templates', 'docs', 'st.docx')
+			doc = DocxTemplate(template_path)
+
+			return self.generate_single_document(doc, karyawan_items, keperluan, tanggal, nama_surat)
+
+		# pdf_file_path = frappe.utils.get_site_path('private', 'files', 'surat_keterangan.pdf')
+		# pypandoc.convert_file(docx_file_path, 'pdf', outputfile=pdf_file_path)
+
+	def generate_single_document(self, doc, karyawan_items, keperluan, tanggal, nama_surat):
+		if karyawan_items[0]['foto_ktp']:
+			foto_ktp_name = karyawan_items[0]['foto_ktp'].split('/')[-1]
+			foto_ktp_path = frappe.utils.get_site_path('private', 'files', foto_ktp_name)
+
+		if karyawan_items[0]['foto_vaksin']:
+			foto_vaksin_name = karyawan_items[0]['foto_vaksin'].split('/')[-1]
+			foto_vaksin_path = frappe.utils.get_site_path('private', 'files', foto_vaksin_name)
+
+		tk = frappe.utils.formatdate(karyawan_items[0]['tk'], "dd MMMM yyyy")
+
+		context = {
+			'no_surat': self.no_surat,
+			'keperluan': keperluan,
+			'lokasi_site': self.lokasi_site,
+			'tanggal': tanggal,
+			'nama': karyawan_items[0]['nama'],
+			'nrp': karyawan_items[0]['nrp'],
+			'jabatan': karyawan_items[0]['jabatan'],
+			'tk': tk,
+			'foto_ktp': InlineImage(doc, foto_ktp_path, width=Mm(70), height=Mm(50)) if foto_ktp_path else None,
+			'foto_vaksin': InlineImage(doc, foto_ktp_path, width=Mm(70), height=Mm(50)) if foto_vaksin_path else None,
+		}
+
+		# Render template
+		doc.render(context)
+
+		# Simpan dokumen yang dihasilkan
+		docx_file_path = frappe.utils.get_site_path('private', 'files', nama_surat)
+		doc.save(docx_file_path)
+
+		return docx_file_path
+
+	def generate_kelompok_document(self, doc, karyawan_items, keperluan, tanggal, nama_surat):
 		table_context = []
 		for karyawan in karyawan_items:
 			foto_ktp_path = None
@@ -53,20 +103,21 @@ class SuratTugas(Document):
 				foto_vaksin_name = karyawan['foto_vaksin'].split('/')[-1]
 				foto_vaksin_path = frappe.utils.get_site_path('private', 'files', foto_vaksin_name)
 
+			tk = frappe.utils.formatdate(karyawan['tk'], "dd MMMM yyyy")
+
 			table_context.append({
 				'no': karyawan['no'],
 				'nama': karyawan['nama'],
 				'nrp': karyawan['nrp'],
 				'jabatan': karyawan['jabatan'],
-				'tk': karyawan['tk'],
-				'foto_ktp': InlineImage(doc, foto_ktp_path, width=Mm(20), height=Mm(20)) if foto_ktp_path else None,
-				'foto_vaksin': InlineImage(doc, foto_vaksin_path, width=Mm(20), height=Mm(20)) if foto_vaksin_path else None,
+				'tk': tk,
+				'foto_ktp': InlineImage(doc, foto_ktp_path, width=Mm(70), height=Mm(50)) if foto_ktp_path else None,
+				'foto_vaksin': InlineImage(doc, foto_vaksin_path, width=Mm(70), height=Mm(50)) if foto_vaksin_path else None,
 			})
 
-		# Siapkan context untuk template
 		context = {
 			'no_surat': self.no_surat,
-			'keperluan': self.keperluan,
+			'keperluan': keperluan,
 			'lokasi_site': self.lokasi_site,
 			'tanggal': tanggal,
 			'karyawan': table_context
@@ -80,9 +131,6 @@ class SuratTugas(Document):
 		doc.save(docx_file_path)
 
 		return docx_file_path
-
-		# pdf_file_path = frappe.utils.get_site_path('private', 'files', 'surat_keterangan.pdf')
-		# pypandoc.convert_file(docx_file_path, 'pdf', outputfile=pdf_file_path)
 
 	def create_folders_if_not_exist(self, base_path, folder_path):
 		# Pisahkan path menjadi komponen folder

@@ -20,7 +20,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-25 15:51:26.777761",
+ "modified": "2024-09-26 09:18:37.635155",
  "modified_by": "Administrator",
  "module": "Hr Management",
  "name": "Jabatan",
@@ -40,6 +40,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],

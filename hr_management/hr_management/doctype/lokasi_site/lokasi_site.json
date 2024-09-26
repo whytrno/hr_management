@@ -69,7 +69,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-09-25 14:31:59.521476",
+ "modified": "2024-09-26 09:21:56.713364",
  "modified_by": "Administrator",
  "module": "Hr Management",
  "name": "Lokasi Site",
@@ -89,6 +89,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
