@@ -1,0 +1,123 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:no_surat",
+ "creation": "2024-09-25 14:37:23.460074",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_jxwa",
+  "surat_ke",
+  "no_surat",
+  "lokasi_site",
+  "keperluan",
+  "tanggal_keberangkatan",
+  "tanggal_kepulangan",
+  "amended_from",
+  "file_url",
+  "section_break_comu",
+  "karyawan"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_jxwa",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Surat Tugas",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "surat_ke",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Surat Ke",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "-",
+   "fieldname": "no_surat",
+   "fieldtype": "Data",
+   "label": "No. Surat",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "lokasi_site",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Lokasi Site",
+   "options": "Lokasi Site",
+   "reqd": 1
+  },
+  {
+   "fieldname": "keperluan",
+   "fieldtype": "Data",
+   "label": "Keperluan"
+  },
+  {
+   "fieldname": "tanggal_keberangkatan",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Tanggal Keberangkatan",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tanggal_kepulangan",
+   "fieldtype": "Date",
+   "label": "Tanggal Kepulangan"
+  },
+  {
+   "fieldname": "karyawan",
+   "fieldtype": "Table",
+   "label": "Karyawan",
+   "options": "User Surat Tugas",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_comu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "file_url",
+   "fieldtype": "Data",
+   "label": "File Url",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-09-25 15:13:11.199040",
+ "modified_by": "Administrator",
+ "module": "Hr Management",
+ "name": "Surat Tugas",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "no_surat"
+}
